@@ -22,42 +22,37 @@ function child_enqueue_wp_child_theme() {
  * Register Admin screen, Footer, Admin bar logo
  * Get the information about the logo.
  */
-function register_my_customize_logo( $wp_customize ) {
+add_action( 'customize_register', function ( $wp_customize ) {
 
-    // Add Settings
-    $wp_customize->add_setting('my_theme_footer_logo', array( 'transport'=>'refresh','height' => 325) );
-    $wp_customize->add_setting('my_theme_admin_logo', array( 'transport'=>'refresh','height' => 325) );
-    $wp_customize->add_setting('my_theme_admin_bar_logo', array( 'transport'=>'refresh','height' => 325) );
+    //
+    $logo_array = ['footer','admin','adminbar'];
 
-    // Add Section
-    $wp_customize->add_section('logo_customizer', array(
-        'title'             => __('Logo Customizer', 'my_custom_logo'), 
-        'priority'          => 20,
-    ));    
+    if( isset($logo_array) && count($logo_array)>0 ){
 
-    // Add Controls
-    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'my_theme_footer_logo_control', array(
-        'label'             => __('Footer Logo', 'my_custom_logo'),
-        'section'           => 'logo_customizer',
-        'settings'          => 'my_theme_footer_logo',
-    )));   
-    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'my_theme_admin_logo_control', array(
-        'label'             => __('Admin Logo', 'my_custom_logo'),
-        'section'           => 'logo_customizer',
-        'settings'          => 'my_theme_admin_logo',
-        'width'             => 250,
-        'height'            => 70,
-        'flex_width'        => true, 
-        'flex_height'       => true,   
-        'priority'          => 1, 
-    )));  
-    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'my_theme_admin_bar_logo_control', array(
-        'label'             => __('Admin Bar Logo', 'my_custom_logo'),
-        'section'           => 'logo_customizer',
-        'settings'          => 'my_theme_admin_bar_logo',    
-    ))); 
-}
-add_action('customize_register', 'register_my_customize_logo'); 
+        foreach ($logo_array as $name) {
+            $wp_customize->add_setting("my_theme_{$name}_logo", ['type'=>'theme_mod','transport'=>'refresh','height'=>325]);
+            $wp_customize->add_control(
+                new WP_Customize_Image_Control(
+                    $wp_customize,
+                    "my_theme_{$name}_logo",
+                    [
+                        'width'         => 250,
+                        'height'        => 250,
+                        'flex-height'   => true,
+                        'flex-width'    => true,
+                        'description' => __("Upload {$name} logo here", 'my_custom_logo'),
+                        'header-text'   => array( 'site-title', 'site-description' ),
+                        'selector'      => ".{$name}_logo",
+                        'label'         => __(ucwords("{$name} Logo"), 'my_custom_logo'),
+                        'section'       => 'options',
+                        'settings'      => "my_theme_{$name}_logo",
+                        'priority'      => 100, 
+                    ]
+                )
+            );
+        }        
+    }
+}); 
 
 // Set admin login logo
 function my_admin_login_logo() {

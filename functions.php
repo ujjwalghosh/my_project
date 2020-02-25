@@ -8,7 +8,9 @@
  * (leave it in place unless you know what you are doing.)
 */
 
-// Child Theme Functions File
+/**
+ * Enqueue stylesheet
+ */
 add_action( 'wp_enqueue_scripts', 'child_enqueue_wp_child_theme' );
 function child_enqueue_wp_child_theme() {
 	$parent_style = 'parent-style';

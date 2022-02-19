@@ -7,5 +7,7 @@
 
 echo "test";
 
-echo "new project comment"
+echo "new project comment";
+
+echo "New change";
 
